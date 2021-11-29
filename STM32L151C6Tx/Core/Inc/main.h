@@ -32,16 +32,16 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "usbd_def.h"
-#include "usbd_hid.h"
-#include "usb_device.h"
+// #include "usbd_def.h"
+// #include "usbd_hid.h"
+// #include "usb_device.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 extern UART_HandleTypeDef huart3;
-extern TIM_HandleTypeDef htim3;
-extern USBD_HandleTypeDef hUsbDeviceFS;
+// extern TIM_HandleTypeDef htim3;
+// extern struct _USBD_HandleTypeDef hUsbDeviceFS;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

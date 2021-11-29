@@ -21,7 +21,7 @@ typedef struct {
     uint8_t keycode6;
 } KeyboardHID;
 
-void _send_keys() {
+void _send_keys(KeyboardContext* ctx) {
     // KeyboardHID tmp = {0};
     // tmp.modifier = 0x00;
     // tmp.modifier = 0x04;
@@ -36,8 +36,10 @@ void _send_keys() {
     // }
 }
 void usb_thread_fn(void* arg) {
+    KeyboardContext* ctx = (KeyboardContext*)arg;
+
     while (1) {
-       _send_keys();
+       _send_keys(ctx);
        osDelay(SCANNING_PERIOD);
     }
 }

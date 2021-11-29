@@ -16,9 +16,15 @@ typedef enum {
     STALE_PRESS = 2
 } KeyState;
 
-extern KeyState KEY_MATRIX[NUM_ROWS][NUM_COLS];
+typedef struct {
+    KeyState KEY_MATRIX[NUM_ROWS][NUM_COLS];
+    uint8_t KEYMAP[NUM_ROWS][NUM_COLS];
+} KeyboardContext;
 
-extern uint8_t KEYMAP[NUM_ROWS][NUM_COLS];
+KeyboardContext KeyboardContext_init();
+
+// extern KeyState KEY_MATRIX[NUM_ROWS][NUM_COLS];
+// extern uint8_t KEYMAP[NUM_ROWS][NUM_COLS];
 
 uint8_t row_is_set(uint8_t r);
 void set_col(uint8_t c);

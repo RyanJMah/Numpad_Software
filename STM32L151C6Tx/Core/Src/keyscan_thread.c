@@ -11,6 +11,8 @@ const osThreadAttr_t keyscan_thread_attrs = {
 };
 
 void keyscan_thread_fn(void* arg) {
+    KeyboardContext* ctx = (KeyboardContext*)arg;
+
     // set all columns to high
     for (uint8_t i = 0; i < NUM_COLS; i++) { set_col(i); }
 
@@ -20,14 +22,14 @@ void keyscan_thread_fn(void* arg) {
             for (uint8_t r = 0; r < NUM_ROWS; r++) {
                 uint8_t pressed = !row_is_set(r);
 
-                if ( pressed && (KEY_MATRIX[r][c] == UNPRESSED) ) {
-                    KEY_MATRIX[r][c] = RECENT_PRESS;
+                if ( pressed && (ctx->KEY_MATRIX[r][c] == UNPRESSED) ) {
+                    ctx->KEY_MATRIX[r][c] = RECENT_PRESS;
                 }
-                else if ( pressed && (KEY_MATRIX[r][c] == RECENT_PRESS) ) {
-                    KEY_MATRIX[r][c] = STALE_PRESS;
+                else if ( pressed && (ctx->KEY_MATRIX[r][c] == RECENT_PRESS) ) {
+                    ctx->KEY_MATRIX[r][c] = STALE_PRESS;
                 }
                 else if (!pressed) {
-                    KEY_MATRIX[r][c] = UNPRESSED;
+                    ctx->KEY_MATRIX[r][c] = UNPRESSED;
                 }
             }
             set_col(c);

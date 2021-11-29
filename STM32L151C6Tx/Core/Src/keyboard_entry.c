@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "main.h"
 #include "serial.h"
+#include "keyboard.h"
 #include "usb_thread.h"
 #include "keyscan_thread.h"
 #include "keyboard_entry.h"
@@ -12,7 +13,7 @@ int keyboard_entry() {
     serial_init();
 
     printf("initializing USB...\r\n");
-    MX_USB_DEVICE_Init();
+    // MX_USB_DEVICE_Init();
 
     serial_init();
 
@@ -20,8 +21,10 @@ int keyboard_entry() {
     osKernelInitialize();
 
     printf("initializing threads...\r\n");
-    keyscan_thread = osThreadNew(keyscan_thread_fn, NULL, &keyscan_thread_attrs);
-    usb_thread = osThreadNew(usb_thread_fn, NULL, &usb_thread_attrs);
+
+    KeyboardContext arg = KeyboardContext_init();
+    keyscan_thread = osThreadNew(keyscan_thread_fn, (void*)(&arg), &keyscan_thread_attrs);
+    usb_thread = osThreadNew(usb_thread_fn, (void*)(&arg), &usb_thread_attrs);
 
     printf("starting kerenel...\r\n");
     osKernelStart();
