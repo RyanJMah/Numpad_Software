@@ -49,28 +49,28 @@ KeyboardContext KeyboardContext_init() {
         },
         .KEY_POS_TO_KEYCODE_LUT = {
             {
-                0x53,   // row0, col0 ==> numlock
+                0x83,   // row0, col0 ==> numlock
                 0x54,   // row0, col1 ==> /
                 0x55,   // row0, col2 ==> *
                 0x56    // row0, col3 ==> -
             },
             {
-                0x24,   // row1, col0 ==> 7
-                0x25,   // row1, col1 ==> 8
-                0x26,   // row1, col2 ==> 9
+                0x5F,   // row1, col0 ==> 7
+                0x60,   // row1, col1 ==> 8
+                0x61,   // row1, col2 ==> 9
                 0x57    // row1, col3 ==> +
             },
             {
-                0x21,   // row2, col0 ==> 4
-                0x22,   // row2, col1 ==> 5
-                0x23,   // row2, col2 ==> 6
+                0x5C,   // row2, col0 ==> 4
+                0x5D,   // row2, col1 ==> 5
+                0x5E,   // row2, col2 ==> 6
                 0x58    // row2, col3 ==> enter
             },
             {
-                0x1E,   // row3, col0 ==> 1
-                0x1F,   // row3, col1 ==> 2
-                0x20,   // row3, col2 ==> 3
-                0x27    // row3, col3 ==> 0
+                0x59,   // row3, col0 ==> 1
+                0x5A,   // row3, col1 ==> 2
+                0x5B,   // row3, col2 ==> 3
+                0x62    // row3, col3 ==> 0
             },
             {
                 0x63,   // row4, col0 ==> . 
@@ -78,36 +78,6 @@ KeyboardContext KeyboardContext_init() {
                 0xff,   // invalid
                 0xff    // invalid
             }
-            // {
-            //     0x53,   // row0, col0 ==> numlock
-            //     0x54,   // row0, col1 ==> /
-            //     0x55,   // row0, col2 ==> *
-            //     0x56    // row0, col3 ==> -
-            // },
-            // {
-            //     0x5F,   // row1, col0 ==> 7
-            //     0x60,   // row1, col1 ==> 8
-            //     0x61,   // row1, col2 ==> 9
-            //     0x57    // row1, col3 ==> +
-            // },
-            // {
-            //     0x5C,   // row2, col0 ==> 4
-            //     0x5D,   // row2, col1 ==> 5
-            //     0x5E,   // row2, col2 ==> 6
-            //     0x58    // row2, col3 ==> enter
-            // },
-            // {
-            //     0x59,   // row3, col0 ==> 1
-            //     0x5A,   // row3, col1 ==> 2
-            //     0x5B,   // row3, col2 ==> 3
-            //     0x62    // row3, col3 ==> 0
-            // },
-            // {
-            //     0x63,   // row4, col0 ==> . 
-            //     0xff,   // invalid
-            //     0xff,   // invalid
-            //     0xff    // invalid
-            // }
         }
     };
     ret.REPORT = HIDReport_init();
@@ -150,7 +120,6 @@ void scan_keys(KeyboardContext* ctx) {
 
                 uint8_t keycode = HIDReport_get_available_keycode(&ctx->REPORT);
                 ctx->KEY_MATRIX[r][c].report_keycode = keycode;
-                // HIDReport_set_keycode(&ctx->REPORT, keycode, 0x04);
                 HIDReport_set_keycode(&ctx->REPORT, keycode, ctx->KEY_POS_TO_KEYCODE_LUT[r][c]);
             }
             else if (!pressed) {
