@@ -24,20 +24,22 @@ BUILD_DIR = build
 
 CORE_SOURCES := $(wildcard ./STM32L151C6Tx/Core/Src/*.c)
 
-# HAL_SOURCES := $(shell find ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src -name "*.c")
-HAL_SOURCES = \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_cortex.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_dma.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_exti.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_gpio.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_pcd.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_pcd_ex.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_rcc.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_tim.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_tim_ex.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_uart.c \
-./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_ll_usb.c \
+HAL_SOURCES := $(shell find ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src -name "*.c")
+# HAL_SOURCES = \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_cortex.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_dma.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_exti.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_gpio.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_pcd.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_pcd_ex.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_rcc.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_tim.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_tim_ex.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_uart.c \
+# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_ll_usb.c \
+
+USB_SOURCES := \
 ./STM32L151C6Tx/USB_DEVICE/App/usb_device.c \
 ./STM32L151C6Tx/USB_DEVICE/App/usbd_desc.c \
 ./STM32L151C6Tx/USB_DEVICE/Target/usbd_conf.c \
@@ -46,7 +48,7 @@ HAL_SOURCES = \
 ./STM32L151C6Tx/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
 ./STM32L151C6Tx/Middlewares/ST/STM32_USB_Device_Library/Class/HID/Src/usbd_hid.c
 
-C_SOURCES := $(CORE_SOURCES) $(HAL_SOURCES)
+C_SOURCES := $(CORE_SOURCES) $(HAL_SOURCES) $(USB_SOURCES)
 
 # ASM sources
 ASM_SOURCES = \

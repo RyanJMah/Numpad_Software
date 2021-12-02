@@ -1,6 +1,7 @@
 #pragma once
 
 #include "main.h"
+#include "hid.h"
 
 #define SCANNING_PERIOD     8
 
@@ -18,37 +19,22 @@ typedef enum {
 } KeyState;
 
 typedef struct {
-    KeyState KEY_MATRIX[NUM_ROWS][NUM_COLS];
-    const uint8_t KEYMAP[NUM_ROWS][NUM_COLS];
+    KeyState state;
+    uint8_t report_keycode;
+} KeyContext;
+
+typedef struct {
+    HIDReport REPORT;
+
+    KeyContext KEY_MATRIX[NUM_ROWS][NUM_COLS];
+    
+    uint8_t KEY_POS_TO_KEYCODE_LUT[NUM_ROWS][NUM_COLS];
 } KeyboardContext;
 
 KeyboardContext KeyboardContext_init();
 uint8_t _row_is_set(uint8_t r);
 void _set_col(uint8_t c);
 void _clear_col(uint8_t c);
-///////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////
-#define HID_RELEASE_KEY     0x00
-#define HID_NUM_KEYS        6
-#define HID_REPORT_SIZE     8
-
-typedef struct {
-    uint8_t modifier;
-    uint8_t reserved;
-    uint8_t keycode1;
-    uint8_t keycode2;
-    uint8_t keycode3;
-    uint8_t keycode4;
-    uint8_t keycode5;
-    uint8_t keycode6;
-} _HIDReport;
-
-typedef union {
-    _HIDReport fields;
-    uint8_t bytes[6];
-} HIDReport;
-
 ///////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////
