@@ -23,7 +23,7 @@ BUILD_DIR = build
 # C sources
 
 CORE_SOURCES := $(wildcard ./STM32L151C6Tx/Core/Src/*.c)
-#CORE_SOURCES := $(shell find ./STM32L151C6Tx/Core/Src -name "*.c")
+
 # HAL_SOURCES := $(shell find ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src -name "*.c")
 HAL_SOURCES = \
 ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal.c \
@@ -46,26 +46,7 @@ HAL_SOURCES = \
 ./STM32L151C6Tx/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
 ./STM32L151C6Tx/Middlewares/ST/STM32_USB_Device_Library/Class/HID/Src/usbd_hid.c
 
-# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_flash.c \
-# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_flash_ex.c \
-# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_flash_ramfunc.c \
-# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_pwr.c \
-# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_pwr_ex.c \
-# ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Src/stm32l1xx_hal_rcc_ex.c \
-
-RTOS_SOURCES =  \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/croutine.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/list.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/queue.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/timers.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c \
-./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c
-
-C_SOURCES := $(CORE_SOURCES) $(HAL_SOURCES) $(RTOS_SOURCES)
+C_SOURCES := $(CORE_SOURCES) $(HAL_SOURCES)
 
 # ASM sources
 ASM_SOURCES = \
@@ -128,9 +109,6 @@ C_INCLUDES =  \
 -I ./STM32L151C6Tx/Drivers/STM32L1xx_HAL_Driver/Inc/Legacy \
 -I ./STM32L151C6Tx/Drivers/CMSIS/Device/ST/STM32L1xx/Include \
 -I ./STM32L151C6Tx/Drivers/CMSIS/Include \
--I ./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/include \
--I ./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \
--I ./STM32L151C6Tx/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 \
 -I ./STM32L151C6Tx/USB_DEVICE/App \
 -I ./STM32L151C6Tx/USB_DEVICE/Target \
 -I ./STM32L151C6Tx/Middlewares/ST/STM32_USB_Device_Library/Core/Inc \
@@ -161,7 +139,6 @@ LDSCRIPT = ./STM32L151C6Tx/STM32L151C6Tx_FLASH.ld
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T $(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
-# LDFLAGS += -u _printf_float
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
@@ -198,7 +175,8 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@
 
 $(BUILD_DIR):
-	mkdir $@		
+	mkdir $@
+	@echo ""
 
 #######################################
 # clean up
@@ -212,8 +190,8 @@ flash:
 	st-flash write $(BUILD_DIR)/$(TARGET).bin 0x08000000
 
 gdb:
-
 	openocd -f interface/stlink.cfg -f target/stm32l1.cfg -c "init"
+
 #######################################
 # dependencies
 #######################################

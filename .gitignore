@@ -1,3 +1,5 @@
 build/
 bin/
 .osx.project
+.gdb_history
+backup

@@ -1,5 +1,8 @@
-#include "keyboard.h"
+#include <stdio.h>
+#include "main.h"
+#include "usbd_hid.h"
 #include "serial.h"
+#include "keyboard.h"
 
 /*
 Reference:
@@ -7,7 +10,11 @@ Reference:
     - Table 12
 */
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 KeyboardContext KeyboardContext_init() {
+    // set all columns to high
+    for (uint8_t i = 0; i < NUM_COLS; i++) { _set_col(i); }
+
     KeyboardContext ret = {
         .KEY_MATRIX = { {UNPRESSED} },
         .KEYMAP = {
@@ -53,13 +60,87 @@ uint8_t _row_map[5] = {
     0x02,
     0x01
 };
-uint8_t row_is_set(uint8_t r) {
+uint8_t _row_is_set(uint8_t r) {
     return ((ROW0_GPIO_Port->IDR >> _row_map[r]) & 1);
 }
 
-void set_col(uint8_t c) {
+void _set_col(uint8_t c) {
     COL0_GPIO_Port->ODR |= ((1 << c) << COL_OFFSET);
 }
-void clear_col(uint8_t c) {
+void _clear_col(uint8_t c) {
     COL0_GPIO_Port->ODR &= ~((1 << c) << COL_OFFSET);
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void scan_keys(KeyboardContext* ctx) {
+    for (uint8_t c = 0; c < NUM_COLS; c++) {
+        _clear_col(c);
+        for (uint8_t r = 0; r < NUM_ROWS; r++) {
+            uint8_t pressed = !_row_is_set(r);
+
+            if ( pressed && (ctx->KEY_MATRIX[r][c] == UNPRESSED) ) {
+                ctx->KEY_MATRIX[r][c] = RECENT_PRESS;
+            }
+            else if ( pressed && (ctx->KEY_MATRIX[r][c] == RECENT_PRESS) ) {
+                ctx->KEY_MATRIX[r][c] = STALE_PRESS;
+            }
+            else if (!pressed) {
+                ctx->KEY_MATRIX[r][c] = UNPRESSED;
+            }
+        }
+        _set_col(c);
+    }
+}
+
+void send_keys(KeyboardContext* ctx) {
+    // KeyboardHID hid = {0x00};
+    // hid.modifier = 0x00;
+
+    // for (uint8_t i = 0; i < 150; i++) {
+    //     hid.keycode1 = 0x05;
+    //     printf("sent report for 'b'\r\n");
+    //     USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)(&hid), sizeof(KeyboardHID));
+    // }
+    // printf("DONE!!!!!!\r\n");
+    // while (1) {
+    //     HIDReport tmp = {0x00};
+    //     tmp.fields.keycode1 = 0x05;
+    //     USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)(&tmp), sizeof(HIDReport));
+    //     HAL_Delay(10);
+
+    //     hid.keycode1 = 0x00;
+    //     USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)(&hid), sizeof(KeyboardHID));
+    //     HAL_Delay(500);
+    // }
+
+    HIDReport report = {0x00};
+    report.fields.modifier = 0x00;
+    report.fields.reserved = 0x00;
+    report.fields.keycode1 = 0x00;
+    report.fields.keycode2 = 0x00;
+    report.fields.keycode3 = 0x00;
+    report.fields.keycode4 = 0x00;
+    report.fields.keycode5 = 0x00;
+    report.fields.keycode6 = 0x00;    
+
+    uint8_t indx = 0;
+    for (uint8_t r = 0; r < NUM_ROWS; r++) {
+        for (uint8_t c = 0; c < NUM_COLS; c++) {
+            if (indx >= HID_REPORT_SIZE) { break; }
+
+            if ( (ctx->KEY_MATRIX[r][c] == STALE_PRESS) || (ctx->KEY_MATRIX[r][c] == RECENT_PRESS) ) {
+                printf("%x\r\n", ctx->KEYMAP[r][c]);
+                report.bytes[indx] = 0x05;
+                indx += 1;
+            }
+        }
+    }
+    printf("indx = %d\r\n", indx);
+    for (uint8_t i = 0; i < HID_REPORT_SIZE; i++) {
+        printf("%d\r\n", report.bytes[i]);
+    }
+    printf("\r\n");
+    USBD_HID_SendReport(&hUsbDeviceFS, report.bytes, HID_REPORT_SIZE);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,5 +5,5 @@ load
 
 b main
 b keyboard_entry
-b keyscan_thread_fn
-# b usb_thread_fn.c:24
+b keyscan_thread.c
+b usb_thread.c:30
